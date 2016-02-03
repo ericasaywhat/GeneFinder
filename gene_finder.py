@@ -2,8 +2,8 @@
 """
 Last Updated: January 31,2016
 
-This is a Python program that analyzes a DNA sequence and outputs snippets 
-of DNA that are likely to be protein-coding genes. 
+This is a gene finding Python program that can accurately determine regions 
+of the Salmonella bacterium's DNA that code for proteins.
 
 @author: Erica Lee
 
@@ -140,11 +140,9 @@ def find_all_ORFs(dna):
     ORFs.extend((find_all_ORFs_oneframe(dna[2:])))
 
 
-    
 
     return ORFs
 
-# print find_all_ORFs("ATGCGAATGTAGCATCAAA")
 
 def find_all_ORFs_both_strands(dna):
     """ Finds all non-nested open reading frames in the given DNA sequence on both
@@ -164,7 +162,6 @@ def find_all_ORFs_both_strands(dna):
     return ORFs
 
 
-# print find_all_ORFs_both_strands("ATGCGAATGTAGCATCAAA")
 
 def longest_ORF(dna):
     """ Finds the longest ORF on both strands of the specified DNA and returns it
@@ -172,8 +169,14 @@ def longest_ORF(dna):
     >>> longest_ORF("ATGCGAATGTAGCATCAAA")
     'ATGCTACATTCGCAT'
     """
-    # TODO: implement this
-    pass
+    i = 0
+    ORFs_both = find_all_ORFs_both_strands(dna)
+    longest = len(ORFs_both)
+    while i +1 < len(ORFs_both):
+        if len(ORFs_both[i+1]) > longest:
+            longest = ORFs_both[i+1]
+        i+=1
+    return longest
 
 
 def longest_ORF_noncoding(dna, num_trials):
@@ -183,8 +186,19 @@ def longest_ORF_noncoding(dna, num_trials):
         dna: a DNA sequence
         num_trials: the number of random shuffles
         returns: the maximum length longest ORF """
-    # TODO: implement this
-    pass
+    longest = 0
+    number = 0
+    while number < num_trials:
+        string = shuffle_string(dna)
+        if len(str(longest_ORF(string))) > longest:
+            longest = len(str(longest_ORF(string)))
+
+        number += 1
+
+    return longest
+
+
+
 
 
 def coding_strand_to_AA(dna):
@@ -201,8 +215,17 @@ def coding_strand_to_AA(dna):
         >>> coding_strand_to_AA("ATGCCCGCTTT")
         'MPA'
     """
-    # TODO: implement this
-    pass
+    amino_acid = ''
+    i = 0
+    while i+3 < len(dna)+1:
+        amino_acid += aa_table[dna[i:i+3]]
+        i+=3
+    return amino_acid
+
+
+
+from load import load_seq
+dna = load_seq("./data/X73525.fa")
 
 
 def gene_finder(dna):
@@ -211,12 +234,26 @@ def gene_finder(dna):
         dna: a DNA sequence
         returns: a list of all amino acid sequences coded by the sequence dna.
     """
-    # TODO: implement this
-    pass
 
-if __name__ == "__main__":
-    import doctest
-    doctest.run_docstring_examples(find_all_ORFs_both_strands, globals())
+    threshold = longest_ORF_noncoding(dna, 1500)
+    
+    all_both = find_all_ORFs_both_strands(dna)
+    amino = []
+    for ORFs in all_both:
+        if len(ORFs) > threshold:
+            amino.append(coding_strand_to_AA(ORFs))
+    
+    return amino
+
+
+
+
+
+print gene_finder(dna)
+
+# if __name__ == "__main__":
+#     import doctest
+#     doctest.run_docstring_examples(gene_finder, globals())
 
 
 # print find_all_ORFs_both_strands("ATGCGAATGTAGCATCAAA")
