@@ -13,6 +13,10 @@ import random
 from amino_acids import aa, codons, aa_table   # you may find these useful
 from load import load_seq
 
+from load import load_seq
+dna = load_seq("./data/X73525.fa")
+
+
 
 def shuffle_string(s):
     """Shuffles the characters in the input string
@@ -223,11 +227,6 @@ def coding_strand_to_AA(dna):
     return amino_acid
 
 
-
-from load import load_seq
-dna = load_seq("./data/X73525.fa")
-
-
 def gene_finder(dna):
     """ Returns the amino acid sequences that are likely coded by the specified dna
 
@@ -249,11 +248,12 @@ def gene_finder(dna):
 
 
 
-print gene_finder(dna)
+if __name__ == "__main__":
+    import doctest
+    doctest.run_docstring_examples(gene_finder, globals())
 
-# if __name__ == "__main__":
-#     import doctest
-#     doctest.run_docstring_examples(gene_finder, globals())
+    print gene_finder(dna)
+
 
 
 # print find_all_ORFs_both_strands("ATGCGAATGTAGCATCAAA")
