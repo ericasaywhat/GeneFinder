@@ -175,9 +175,9 @@ def longest_ORF(dna):
     """
     i = 0
     ORFs_both = find_all_ORFs_both_strands(dna)
-    longest = len(ORFs_both)
+    longest = ORFs_both[0]
     while i +1 < len(ORFs_both):
-        if len(ORFs_both[i+1]) > longest:
+        if len(ORFs_both[i+1]) > len(longest):
             longest = ORFs_both[i+1]
         i+=1
     return longest
