@@ -13,9 +13,9 @@ import random
 from amino_acids import aa, codons, aa_table   # you may find these useful
 from load import load_seq
 
-from load import load_seq
+from load import load_seq, load_contigs
 dna = load_seq("./data/X73525.fa")
-
+contigs = load_contigs()
 
 
 def shuffle_string(s):
@@ -47,7 +47,7 @@ def get_complement(nucleotide):
         return "C"
 
     else:
-        return "not a nucleotide"
+        return "A"
 
 
 
@@ -193,6 +193,7 @@ def longest_ORF_noncoding(dna, num_trials):
     longest = 0
     number = 0
     while number < num_trials:
+        print number
         string = shuffle_string(dna)
         if len(str(longest_ORF(string))) > longest:
             longest = len(str(longest_ORF(string)))
@@ -234,7 +235,7 @@ def gene_finder(dna):
         returns: a list of all amino acid sequences coded by the sequence dna.
     """
 
-    threshold = longest_ORF_noncoding(dna, 1500)
+    threshold = longest_ORF_noncoding(dna, 50)
     
     all_both = find_all_ORFs_both_strands(dna)
     amino = []
@@ -252,7 +253,7 @@ if __name__ == "__main__":
     import doctest
     doctest.run_docstring_examples(gene_finder, globals())
 
-    print gene_finder(dna)
+    print gene_finder(contigs[1][1])
 
 
 
